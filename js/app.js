@@ -1,6 +1,6 @@
     /*Задаём размеры карты*/
-      var width = 2197;
-      var height = 618;
+      var width = 2203;
+      var height = 2366;
     /*Задаём максимвльный и минимальный зум*/
       var maxLevel = 4;
       var minLevel = 3;
