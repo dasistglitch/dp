@@ -1,26 +1,3 @@
-    /*Задаём размеры карты*/
-      var width = 2203;
-      var height = 2366;
-    /*Задаём максимвльный и минимальный зум*/
-      var maxLevel = 4;
-      var minLevel = 3;
-      var orgLevel = 4;
-    /*Рассчитываем координаты для границ и начального положения карты при открытии*/
-      var tileWidth = 256 * Math.pow(2, orgLevel);
-      var radius = tileWidth / 2 / Math.PI;
-      var rx = width - tileWidth / 2;
-      var ry = -height + tileWidth / 2;
-      var west = -180;
-      var east = (180 / Math.PI) * (rx / radius);
-      var north = 85.05;
-      var south = (360 / Math.PI) * (Math.atan(Math.exp(ry / radius)) - (Math.PI / 4));
-      var rc = (tileWidth / 2 + ry) / 2;
-    /*Координаты используются для указания центра карты*/
-      var centerLat = (360 / Math.PI) * (Math.atan(Math.exp(rc / radius)) - (Math.PI / 4));
-      var centerLon = (west + east) / 2;
-      
-      var bounds = [[south, west], [north, east]]; //границы
-
 
 var basemap = new L.TileLayer(baseUrl, {bounds: bounds, minZoom: minLevel, maxZoom: maxLevel, attribution: baseAttribution, 
     subdomains: subdomains, opacity: opacity, noWrap: true});
@@ -32,7 +9,7 @@ var map = new L.Map('map', {center: center, zoom: 2, maxZoom: maxLevel, layers: 
    // Map.setMaxBounds([bounds]);
 
 var popupOpts = {
-    autoPanPadding: new L.Point(5, 50),
+    autoPanPadding: new L.Point(5, 50), //центр маркера, от куда всплывает поп-ап окно
     autoPan: true
 };
 
@@ -42,8 +19,8 @@ var points = L.geoCsv (null, {
     onEachFeature: function (feature, layer) {
         var popup = '<div class="popup-content"><table class="table table-striped table-bordered table-condensed">';
         for (var clave in feature.properties) {
-            var title = points.getPropertyTitle(clave).strip();
-            var attr = feature.properties[clave];
+            var title = points.getPropertyTitle(clave).strip(); //Заголовок таблицы (фото, должность и прочее)
+            var attr = feature.properties[clave]; //значение под заголовками
             if (title == labelColumn) {
                 layer.bindLabel(feature.properties[clave], {className: 'map-label'});
             }
@@ -51,7 +28,7 @@ var points = L.geoCsv (null, {
                 attr = '<a target="_blank" href="' + attr + '">'+ attr + '</a>';
             }
             if (attr) {
-                if (title == 'Фото') {
+                if (title == 'Фото') { //подхват фото из папки с фотографиями
                 popup += '<tr><th>'+title+'</th><td>'+ '<img src="photos/'+ attr +'.png">' +'</td></tr>';
             } else
                 if (attr) {
@@ -133,6 +110,7 @@ function ArrayToSet(a) {
     return r;
 }
 
+
 function populateTypeAhead(csv, delimiter) {
     var lines = csv.split("\n");
     for (var i = lines.length - 1; i >= 1; i--) {
@@ -159,6 +137,7 @@ if(typeof(String.prototype.strip) === "undefined") {
 
 map.addLayer(markers);
 
+/*Проверка наличия csv-файла*/
 $(document).ready( function() {
     $.ajax ({
         type:'GET',
@@ -198,3 +177,15 @@ $(document).ready(function(){
         }
     );
 });
+
+/* //часы
+<script type="text/javascript">
+window.onload = function(){
+(function(){
+var date = new Date();
+var time = date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+document.getElementsByTagName('div')[0].innerHTML = time;
+window.setTimeout(arguments.callee, 1000);
+    })();
+};
+</script> */
